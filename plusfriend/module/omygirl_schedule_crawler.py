@@ -6,12 +6,8 @@ from bs4 import BeautifulSoup
 class ScheduleCrawler():
     ROOT_URL = "http://ohmy-girl.com/omg_official/schedule.php"
 
-    def __init__(self):
-        self.dt = datetime.datetime.now()
-        self.day =  self.dt.day
-        self.month = self.dt.month
-
-    def _crawling(self):
+    @staticmethod
+    def _crawling():
         """
         해당 날짜의 오마이걸의 월간 스케줄을 알려줍니다.
         :return:
@@ -31,16 +27,22 @@ class ScheduleCrawler():
 
         return results
 
-    def _parsing(self, schedule):
+    @staticmethod
+    def _parsing(schedule):
+        dt = datetime.datetime.now()
+        day = dt.day
+        month = dt.month
+
         result = ''
-        result += "{}월의 오마이걸 스케줄 \n".format(self.month)
+        result += "{}월의 오마이걸 스케줄 \n".format(month)
         for day in schedule.keys():
-            result += "{}월 {}일 \n".format(self.month, day)
+            result += "{}월 {}일 \n".format(month, day)
             for sc in schedule[day]:
                 result += "    - {}\n".format(sc.replace('<br />', ''))
 
         return result
 
-    def process(self):
-        schedule = self._crawling()
-        return self._parsing(schedule)
+    @staticmethod
+    def process():
+        schedule = ScheduleCrawler._crawling()
+        return ScheduleCrawler._parsing(schedule)

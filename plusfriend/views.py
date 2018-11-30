@@ -1,43 +1,24 @@
 from .decorators import bot
-from .omygirl_schedule_crawler import ScheduleCrawler 
+from .module.omygirl_schedule_crawler import ScheduleCrawler
+from .module.lunch_choice import MenuChoice
+
+action_method = {
+        '오마이걸 스케줄':ScheduleCrawler.process,
+        '뭐 먹을까?':MenuChoice.choice,
+    }
 
 @bot
 def on_init(request): # 채팅방 진입 시
     return {
         'type':'buttons',
-        'buttons':[
-            '오마이걸 스케줄',
-        ]        
+        'buttons':list(action_method.keys())
     }
 
 
 @bot
 def on_message(request):
-    user_key = request.JSON['user_key']
-    type = request.JSON['type']
     content = request.JSON['content']
-    
-    if content == '오마이걸 스케줄':
-        sc = ScheduleCrawler()
-        res = sc.process()
-
-        return {
-            'message':{
-                'text':res,
-            },
-            'keyboard':{
-                'type':'buttons',
-                'buttons':[
-                    '비투비 스케줄'
-                ]
-            }
-        }
-    else:
-        return {
-            'message':{
-                'text':'안녕하세여 저는 예진이를 위한 챗봇 챙봉이에요'
-            }        
-        }
+    return action(content)
 
 
 @bot
@@ -56,3 +37,16 @@ def on_leave(request, user_key):
     if request.method == 'DELETE':
         pass
 
+
+def action(content):
+    res = action_method[content]()
+
+    return {
+        'message': {
+            'text': res,
+        },
+        'keyboard': {
+            'type': 'buttons',
+            'buttons': list(action_method.keys())
+        }
+    }
