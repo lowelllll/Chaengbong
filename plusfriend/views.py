@@ -1,11 +1,13 @@
 from .decorators import bot
 from .module.omygirl_schedule_crawler import ScheduleCrawler
-from .module.lunch_choice import MenuChoice
+from .module.menu_choice import MenuChoice
+from .module.wether import Weather
 
 action_method = {
-        '오마이걸 스케줄':ScheduleCrawler.process,
+        '날씨':Weather.process,
         '뭐 먹을까?':MenuChoice.choice,
-    }
+        '오마이걸 스케줄':ScheduleCrawler.process,
+}
 
 @bot
 def on_init(request): # 채팅방 진입 시
