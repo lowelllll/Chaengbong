@@ -8,29 +8,12 @@ class Weather():
     now_weather = {} # 현재 날씨
 
     @staticmethod
-    def _xml_parse():
-        response = requests.get('http://www.kma.go.kr/wid/queryDFSRSS.jsp?zone=1162069500')
-        root = ElementTree.fromstring(response.content)
-        body = root[0][6].find('description')[1]
-
-        for data in body[-8:]:
-            dic = dict()
-            dic['hour'] =  int(data[0].text)
-            dic['comment'] = data[7].text
-            dic['tmn'] = data[3].text+'도' if data[3].text != '-999.0' else '알 수 없음'
-            dic['tmx'] = data[4].text+'도' if data[4].text != '-999.0' else '알 수 없음'
-            Weather.weather.append(dic)
-
-        Weather.weather.sort(key=lambda x:x['hour'])
-
-    @staticmethod
     def _crawler():
         res = requests.get('http://www.weather.go.kr/weather/process/timeseries-dfs-body-ajax.jsp?myPointCode=1162069500&unit=M')
         soup = BeautifulSoup(res.text, 'html.parser')
         data = soup.select(
             'dl > dd.now_weather1_center'
         )
-        print(data)
 
         Weather.now_weather['hour'] = datetime.datetime.now().hour
         Weather.now_weather['temp'] = data[0].text
@@ -56,6 +39,6 @@ class Weather():
     @staticmethod
     def process():
         Weather._crawler()
-        print(Weather._create_message())
+        return Weather._create_message()
 
-Weather.process()
+

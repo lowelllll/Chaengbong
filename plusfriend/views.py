@@ -1,7 +1,7 @@
 from .decorators import bot
 from .module.omygirl_schedule_crawler import ScheduleCrawler
 from .module.menu_choice import MenuChoice
-from .module.wether import Weather
+from .module.weather import Weather
 
 action_method = {
         '날씨':Weather.process,
